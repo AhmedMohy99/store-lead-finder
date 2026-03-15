@@ -1,19 +1,33 @@
-{results.length > 0 && (
-  <div className="rounded-2xl border p-4 shadow-sm bg-white">
-    <h2 className="text-xl font-semibold">{results[0].name}</h2>
-    <p><strong>Address:</strong> {results[0].address || "N/A"}</p>
-    <p><strong>Phone:</strong> {results[0].phone || "N/A"}</p>
-    <p><strong>Website:</strong> {results[0].website || "No website"}</p>
-    <p><strong>Category:</strong> {results[0].category || "N/A"}</p>
-    <p><strong>Maps:</strong> {results[0].googleMapsUrl ? (
-      <a
-        href={results[0].googleMapsUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="text-blue-600 underline"
-      >
-        Open in Google Maps
-      </a>
-    ) : "N/A"}</p>
-  </div>
-)}
+const handleSearch = async () => {
+  try {
+    setLoading(true);
+    setError("");
+    setResults([]);
+
+    const res = await fetch("/api/search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        city,
+        country,
+        keyword,
+        maxResults: 1,
+        noWebsiteOnly,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to search businesses.");
+    }
+
+    setResults(Array.isArray(data.results) ? data.results : []);
+  } catch (err) {
+    setError(err.message || "Something went wrong.");
+  } finally {
+    setLoading(false);
+  }
+};

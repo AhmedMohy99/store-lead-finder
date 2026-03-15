@@ -13,8 +13,8 @@ const handleSearch = async () => {
         city,
         country,
         keyword,
-        maxResults: 1,
-        noWebsiteOnly,
+const [maxResults, setMaxResults] = useState(1);
+                           noWebsiteOnly,
       }),
     });
 
